@@ -1,6 +1,7 @@
 import { promisify } from 'util';
 import jwt from 'jsonwebtoken';
 import Student from '../models/studentModel.js';
+import Hostel from '../models/hostelModel.js';
 import AppError from '../utils/AppError.js';
 import catchAsync from '../utils/catchAsync.js';
 
@@ -12,7 +13,7 @@ const signToken = (id) => {
 };
 
 // CREATE TOKEN TO BE SENT TO BE ASSIGNED TO THE USER
-const createSendToken = (user, statusCode, res) => {
+export const createSendToken = (user, statusCode, res) => {
   const token = signToken(user._id);
   const cookieOptions = {
     expires: new Date(
@@ -33,7 +34,6 @@ const createSendToken = (user, statusCode, res) => {
   });
 };
 
-// ROUTE TO SIGN UP
 export const signup = catchAsync(async (req, res, next) => {
   const { name, email, password } = req.body;
   const newUser = await Student.create({
@@ -62,7 +62,6 @@ export const adminOnly = catchAsync(async (req, res, next) => {
   });
 });
 
-// ROUTE TO LOGIN
 export const login = catchAsync(async (req, res, next) => {
   const { email, password } = req.body;
 
@@ -79,13 +78,14 @@ export const login = catchAsync(async (req, res, next) => {
   createSendToken(user, 200, res);
 });
 
-// ROUTE TO LOGOUT
 export const logout = (req, res) => {
   res.cookie('jwt', 'loggedout', {
     expires: new Date(Date.now() + 10 * 1000),
     httpOnly: true,
   });
-  res.status(200).json({ status: 'success' });
+  res
+    .status(200)
+    .json({ status: 'success', message: 'Successfully Logged Out' });
 };
 
 // ROUTE TO CHECK WHETHER THE USER IS LOGGED IN

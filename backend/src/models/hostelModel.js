@@ -7,7 +7,7 @@ const hostelSchema = new mongoose.Schema({
     unique: true,
   },
   abbreviatedName: {
-    type: CharacterData,
+    type: String,
     required: [true, 'A hostel must have an abbreviated name'],
     unique: true,
   },

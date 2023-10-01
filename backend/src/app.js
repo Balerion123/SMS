@@ -9,7 +9,8 @@ import cors from 'cors';
 import AppError from './utils/AppError.js';
 import globalErrorHandler from './controllers/errorController.js';
 import authRouter from './routes/authRoutes.js';
-import userRouter from './routes/userRoutes.js';
+import studentRouter from './routes/studentRoutes.js';
+import hostelRouter from './routes/hostelRoutes.js';
 
 const app = express();
 
@@ -42,7 +43,8 @@ app.use(xss());
 // 2) ROUTES
 // USING GLOBAL HANDLER
 app.use('/api/v1/auth', authRouter);
-app.use('/api/v1/user', userRouter);
+app.use('/api/v1/student', studentRouter);
+app.use('/api/v1/hostel', hostelRouter);
 
 app.all('*', (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404, res));

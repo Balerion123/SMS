@@ -13,6 +13,7 @@ const studentSchema = new mongoose.Schema({
   enrollmentNumber: {
     type: Number,
     required: [true, 'Please provide your enrollment number'],
+    unique: true,
     validate: {
       validator: function (enrollmentNumber) {
         const stringValue = enrollmentNumber.toString();
