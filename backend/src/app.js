@@ -10,6 +10,8 @@ import AppError from './utils/AppError.js';
 import globalErrorHandler from './controllers/errorController.js';
 import authRouter from './routes/authRoutes.js';
 import studentRouter from './routes/studentRoutes.js';
+import cleanerRouter from './routes/cleanerRoutes.js';
+import supervisorRouter from './routes/supervisorRoutes.js';
 import hostelRouter from './routes/hostelRoutes.js';
 
 const app = express();
@@ -44,6 +46,8 @@ app.use(xss());
 // USING GLOBAL HANDLER
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/student', studentRouter);
+app.use('/api/v1/cleaner', cleanerRouter);
+app.use('/api/v1/supervisor', supervisorRouter);
 app.use('/api/v1/hostel', hostelRouter);
 
 app.all('*', (req, res, next) => {

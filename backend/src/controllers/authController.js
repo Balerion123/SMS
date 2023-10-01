@@ -1,9 +1,10 @@
 import { promisify } from 'util';
 import jwt from 'jsonwebtoken';
-import Student from '../models/studentModel.js';
-import Hostel from '../models/hostelModel.js';
 import AppError from '../utils/AppError.js';
 import catchAsync from '../utils/catchAsync.js';
+import Student from '../models/studentModel.js';
+import Cleaner from '../models/cleanerModel.js';
+import Supervisor from '../models/supervisorModel.js';
 
 // CREATE SIGN TOKEN
 const signToken = (id) => {
@@ -69,10 +70,20 @@ export const login = catchAsync(async (req, res, next) => {
     return next(new AppError('Please provide email and password!', 400));
   }
 
-  const user = await Student.findOne({ email }).select('+password');
+  const student = await Student.findOne({ email }).select('+password');
+  const cleaner = await Cleaner.findOne({ email }).select('+password');
+  const supervisor = await Supervisor.findOne({ email }).select('+password');
 
-  if (!user || user.password !== password) {
-    return next(new AppError('Incorrect email or password!', 401));
+  if (!student && !cleaner && !supervisor)
+    return next(new AppError('No user with this email!', 401));
+
+  let user = '';
+  if (student) user = student;
+  if (cleaner) user = cleaner;
+  if (supervisor) user = supervisor;
+
+  if (user.password !== password) {
+    return next(new AppError('Incorrect password!', 401));
   }
 
   createSendToken(user, 200, res);
@@ -109,9 +120,14 @@ export const protect = catchAsync(async (req, res, next) => {
   // 2) Verification token
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
 
+  let currentUser = '';
+
+  const student = await Student.findById(decoded.id);
+  const cleaner = await Cleaner.findById(decoded.id);
+  const supervisor = await Supervisor.findById(decoded.id);
+
   // 3) Check if user still exists
-  const currentUser = await Student.findById(decoded.id);
-  if (!currentUser) {
+  if (!student && !cleaner && !supervisor) {
     return next(
       new AppError(
         'The user belonging to this token does no longer exists',
@@ -119,6 +135,10 @@ export const protect = catchAsync(async (req, res, next) => {
       )
     );
   }
+
+  if (student) currentUser = student;
+  if (cleaner) currentUser = cleaner;
+  if (supervisor) currentUser = supervisor;
 
   // GRANT ACCESS TO PROTECTED ROUTE
   req.user = currentUser;

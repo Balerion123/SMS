@@ -1,4 +1,4 @@
-import Cleaner from '../models/cleanerModel';
+import Cleaner from '../models/cleanerModel.js';
 import Hostel from '../models/hostelModel.js';
 import { createSendToken } from './authController.js';
 import AppError from '../utils/AppError.js';
@@ -32,8 +32,8 @@ export const cleanerSignup = catchAsync(async (req, res, next) => {
 });
 
 export const getMyProfile = catchAsync(async (req, res, next) => {
-  const user = await Student.findById(req.params.id);
-  if (!user) return next(new AppError('Student not found', 401));
+  const user = await Cleaner.findById(req.params.id);
+  if (!user) return next(new AppError('Cleaner not found', 401));
 
   res.status(200).json({
     status: 'success',
