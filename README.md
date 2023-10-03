@@ -12,5 +12,5 @@ The Safaai Management System is a software project designed to enhance the effic
 ## Features
 
 - **Slot Booking:** Residents can easily book cleaning slots according to their preferences.
-- **View and Marking:** Cleaners can view and mark booked slots for effective scheduling.
+- **View and Marking:** Cleaners can view and mark the slots according to their availability for effective scheduling.
 - **Comprehensive Management:** The system offers a complete solution for managing cleaning services within the hostels.
