@@ -4,7 +4,6 @@ const bookingSchema = new mongoose.Schema({
   cleaner: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Cleaner',
-    default: NULL,
   },
   student: {
     type: mongoose.Schema.Types.ObjectId,
@@ -24,6 +23,12 @@ const bookingSchema = new mongoose.Schema({
       },
     ],
     default: [],
+    validate: {
+      validator: function (slots) {
+        return slots.length >= 1 && slots.length <= 3;
+      },
+      message: 'Provide between 1 and 3 slots',
+    },
   },
   status: {
     type: String,
@@ -33,12 +38,10 @@ const bookingSchema = new mongoose.Schema({
   result: {
     status: {
       type: String,
-      enum: ['', 'Success', 'Failed'],
-      default: '',
+      enum: ['Success', 'Failed'],
     },
     reason: {
       type: String,
-      default: '',
     },
   },
 });

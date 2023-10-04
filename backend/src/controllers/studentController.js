@@ -3,6 +3,7 @@ import Hostel from '../models/hostelModel.js';
 import { createSendToken } from './authController.js';
 import AppError from '../utils/AppError.js';
 import catchAsync from '../utils/catchAsync.js';
+import Booking from '../models/bookingModel.js';
 
 export const test = (req, res, next) => {
   res.status(200).json({
@@ -46,6 +47,23 @@ export const studentSignup = catchAsync(async (req, res, next) => {
   });
 
   createSendToken(newStudent, 201, res);
+});
+
+export const createBooking = catchAsync(async (req, res, next) => {
+  const { slots } = req.body;
+
+  const student = await Student.findById(req.params.id);
+
+  const newBooking = await Booking.create({
+    student: student._id,
+    hostel: student.hostel,
+    slots,
+  });
+
+  res.status(201).json({
+    status: 'success',
+    message: 'Successfully created booking',
+  });
 });
 
 export const getMyProfile = catchAsync(async (req, res, next) => {

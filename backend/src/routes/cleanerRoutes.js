@@ -2,6 +2,9 @@ import express from 'express';
 import {
   getMyProfile,
   cleanerSignup,
+  getAllBookings,
+  acceptBooking,
+  getMyBookings,
 } from '../controllers/cleanerController.js';
 import { protect, getMe } from '../controllers/authController.js';
 
@@ -13,5 +16,8 @@ router.post('/signup', cleanerSignup);
 router.use(protect);
 
 router.get('/getMyProfile', getMe, getMyProfile);
+router.get('/getAllBookings', getMe, getAllBookings);
+router.get('/getMyBookings', getMyBookings);
+router.get('/acceptBooking', getMe, acceptBooking);
 
 export default router;

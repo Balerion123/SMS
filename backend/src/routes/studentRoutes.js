@@ -2,6 +2,7 @@ import express from 'express';
 import {
   getMyProfile,
   studentSignup,
+  createBooking,
   test,
 } from '../controllers/studentController.js';
 import { protect, getMe } from '../controllers/authController.js';
@@ -15,5 +16,6 @@ router.post('/signup', studentSignup);
 router.use(protect);
 
 router.get('/getMyProfile', getMe, getMyProfile);
+router.post('/createBooking', getMe, createBooking);
 
 export default router;
