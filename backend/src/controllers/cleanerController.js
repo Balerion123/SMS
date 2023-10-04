@@ -5,6 +5,18 @@ import AppError from '../utils/AppError.js';
 import catchAsync from '../utils/catchAsync.js';
 import Booking from '../models/bookingModel.js';
 
+const getBookingAndVerify = catchAsync(async (bookingID, cleanerID, next) => {
+  const booking = await Booking.findOne({ _id: bookingID, cleaner: cleanerID });
+  console.log(booking);
+
+  if (!booking)
+    throw new AppError(
+      'You are not the cleaner for this particular booking',
+      403
+    );
+  return booking;
+});
+
 export const cleanerSignup = catchAsync(async (req, res, next) => {
   const { name, email, phoneNumber, hostelName, password, confirmPassword } =
     req.body;
@@ -34,7 +46,6 @@ export const cleanerSignup = catchAsync(async (req, res, next) => {
 
 export const getAllBookings = catchAsync(async (req, res, next) => {
   const cleaner = await Cleaner.findById(req.params.id);
-  console.log(cleaner.hostel);
   const bookings = await Booking.find({ hostel: cleaner.hostel });
 
   res.status(200).json({ status: 'success', bookings });
@@ -65,6 +76,33 @@ export const acceptBooking = catchAsync(async (req, res, next) => {
 export const getMyBookings = catchAsync(async (req, res, next) => {
   const bookings = await Booking.find({ cleaner: req.params.id });
   res.status(200).json({ status: 'success,', bookings });
+});
+
+export const completeBookingSuccess = catchAsync(async (req, res, next) => {
+  const { bookingID } = req.query;
+
+  const booking = getBookingAndVerify(bookingID, req.params.id, next);
+  if (!booking) return next(new AppError('Booking not found', 404));
+
+  booking.result = { status: 'Success' };
+  await booking.save();
+
+  res
+    .status(200)
+    .json({ status: 'success', message: 'booking marked as success' });
+});
+
+export const completeBookingFailure = catchAsync(async (req, res, next) => {
+  const { bookingID, reason } = req.body;
+
+  const booking = getBookingAndVerify(bookingID, req.params.id, next);
+
+  booking.result = { status: 'Failed', reason };
+  await booking.save();
+
+  res
+    .status(200)
+    .json({ status: 'success', message: 'booking marked as failure' });
 });
 
 export const getMyProfile = catchAsync(async (req, res, next) => {

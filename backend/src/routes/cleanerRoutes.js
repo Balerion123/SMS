@@ -5,6 +5,8 @@ import {
   getAllBookings,
   acceptBooking,
   getMyBookings,
+  completeBookingSuccess,
+  completeBookingFailure,
 } from '../controllers/cleanerController.js';
 import { protect, getMe } from '../controllers/authController.js';
 
@@ -17,7 +19,9 @@ router.use(protect);
 
 router.get('/getMyProfile', getMe, getMyProfile);
 router.get('/getAllBookings', getMe, getAllBookings);
-router.get('/getMyBookings', getMyBookings);
+router.get('/getMyBookings', getMe, getMyBookings);
 router.get('/acceptBooking', getMe, acceptBooking);
+router.get('/completeBookingSuccess', getMe, completeBookingSuccess);
+router.post('/completeBookingFailure', getMe, completeBookingFailure);
 
 export default router;

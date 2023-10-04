@@ -36,13 +36,16 @@ const bookingSchema = new mongoose.Schema({
     default: 'Unassigned',
   },
   result: {
-    status: {
-      type: String,
-      enum: ['Success', 'Failed'],
+    type: {
+      status: {
+        type: String,
+        enum: ['Success', 'Failed'],
+      },
+      reason: {
+        type: String,
+      },
     },
-    reason: {
-      type: String,
-    },
+    default: {},
   },
 });
 
