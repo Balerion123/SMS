@@ -3,10 +3,14 @@ import {
   getMyProfile,
   studentSignup,
   createBooking,
-  test,
   leaveComplain,
+  test,
 } from '../controllers/studentController.js';
-import { protect, getMe } from '../controllers/authController.js';
+import {
+  protect,
+  restrictToStudents,
+  getMe,
+} from '../controllers/authController.js';
 import { getMyBookings } from '../controllers/studentController.js';
 
 const router = express.Router();
@@ -14,8 +18,9 @@ const router = express.Router();
 router.get('/test', test);
 router.post('/signup', studentSignup);
 
-// USER MUST BE LOGGED IN TO ACCESS THE FOLLOWING ROUTES
+// USER MUST BE LOGGED IN AND A STUDENT TO ACCESS THE FOLLOWING ROUTES
 router.use(protect);
+router.use(restrictToStudents);
 
 router.get('/getMyProfile', getMe, getMyProfile);
 router.get('/getMyBookings', getMe, getMyBookings);

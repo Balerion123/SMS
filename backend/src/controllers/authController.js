@@ -152,6 +152,33 @@ export const protect = catchAsync(async (req, res, next) => {
   next();
 });
 
+export const restrictToStudents = catchAsync(async (req, res, next) => {
+  const userID = req.user.id;
+
+  const student = await Student.findById(userID);
+
+  if (!student) return next(new AppError('Not a student!', 403));
+  next();
+});
+
+export const restrictToCleaners = catchAsync(async (req, res, next) => {
+  const userID = req.user.id;
+
+  const cleaner = await Cleaner.findById(userID);
+
+  if (!cleaner) return next(new AppError('Not a cleaner!', 403));
+  next();
+});
+
+export const restrictToSupervisors = catchAsync(async (req, res, next) => {
+  const userID = req.user.id;
+
+  const supervisor = await Supervisor.findById(userID);
+
+  if (!supervisor) return next(new AppError('Not a supervisor!', 403));
+  next();
+});
+
 export const getMe = (req, res, next) => {
   req.params.id = req.user.id;
   next();
