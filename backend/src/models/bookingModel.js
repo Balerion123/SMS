@@ -15,6 +15,10 @@ const bookingSchema = new mongoose.Schema({
     ref: 'Hostel',
     requires: [true, 'A booking must belong to a hostel'],
   },
+  bookingTime: {
+    type: Date,
+    required: [true, 'Time of booking is required'],
+  },
   slots: {
     type: [
       {
@@ -46,6 +50,10 @@ const bookingSchema = new mongoose.Schema({
       },
     },
     default: {},
+  },
+  complaint: {
+    type: String,
+    default: '',
   },
 });
 

@@ -4,8 +4,10 @@ import {
   studentSignup,
   createBooking,
   test,
+  leaveComplain,
 } from '../controllers/studentController.js';
 import { protect, getMe } from '../controllers/authController.js';
+import { getMyBookings } from '../controllers/studentController.js';
 
 const router = express.Router();
 
@@ -16,6 +18,8 @@ router.post('/signup', studentSignup);
 router.use(protect);
 
 router.get('/getMyProfile', getMe, getMyProfile);
+router.get('/getMyBookings', getMe, getMyBookings);
 router.post('/createBooking', getMe, createBooking);
+router.post('/leaveComplain', getMe, leaveComplain);
 
 export default router;

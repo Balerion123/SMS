@@ -3,6 +3,7 @@ import Hostel from '../models/hostelModel.js';
 import { createSendToken } from './authController.js';
 import AppError from '../utils/AppError.js';
 import catchAsync from '../utils/catchAsync.js';
+import Booking from '../models/bookingModel.js';
 
 export const supervisorSignup = catchAsync(async (req, res, next) => {
   const { name, email, phoneNumber, hostelName, password, confirmPassword } =
@@ -29,6 +30,13 @@ export const supervisorSignup = catchAsync(async (req, res, next) => {
   });
 
   createSendToken(newSupervisor, 201, res);
+});
+
+export const getComplaints = catchAsync(async (req, res, next) => {
+  const supervisor = await Supervisor.findById(req.params.id);
+  const complaints = await Booking.find({ hostel: supervisor.hostel });
+
+  res.status(200).json({ status: 'success', complaints });
 });
 
 export const getMyProfile = catchAsync(async (req, res, next) => {

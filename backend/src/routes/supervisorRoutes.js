@@ -1,5 +1,6 @@
 import express from 'express';
 import {
+  getComplaints,
   getMyProfile,
   supervisorSignup,
 } from '../controllers/supervisorController.js';
@@ -13,5 +14,6 @@ router.post('/signup', supervisorSignup);
 router.use(protect);
 
 router.get('/getMyProfile', getMe, getMyProfile);
+router.get('/getComplaints', getMe, getComplaints);
 
 export default router;

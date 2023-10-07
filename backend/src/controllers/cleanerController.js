@@ -5,17 +5,19 @@ import AppError from '../utils/AppError.js';
 import catchAsync from '../utils/catchAsync.js';
 import Booking from '../models/bookingModel.js';
 
-const getBookingAndVerify = catchAsync(async (bookingID, cleanerID, next) => {
+const getBookingAndVerify = async (bookingID, cleanerID) => {
   const booking = await Booking.findOne({ _id: bookingID, cleaner: cleanerID });
-  console.log(booking);
 
   if (!booking)
     throw new AppError(
       'You are not the cleaner for this particular booking',
       403
     );
+  if (booking.result.status)
+    throw new AppError('Booking has already been marked as complete', 400);
+
   return booking;
-});
+};
 
 export const cleanerSignup = catchAsync(async (req, res, next) => {
   const { name, email, phoneNumber, hostelName, password, confirmPassword } =
@@ -75,14 +77,13 @@ export const acceptBooking = catchAsync(async (req, res, next) => {
 
 export const getMyBookings = catchAsync(async (req, res, next) => {
   const bookings = await Booking.find({ cleaner: req.params.id });
-  res.status(200).json({ status: 'success,', bookings });
+  res.status(200).json({ status: 'success', bookings });
 });
 
 export const completeBookingSuccess = catchAsync(async (req, res, next) => {
   const { bookingID } = req.query;
 
-  const booking = getBookingAndVerify(bookingID, req.params.id, next);
-  if (!booking) return next(new AppError('Booking not found', 404));
+  const booking = await getBookingAndVerify(bookingID, req.params.id);
 
   booking.result = { status: 'Success' };
   await booking.save();
@@ -93,9 +94,13 @@ export const completeBookingSuccess = catchAsync(async (req, res, next) => {
 });
 
 export const completeBookingFailure = catchAsync(async (req, res, next) => {
-  const { bookingID, reason } = req.body;
+  const { bookingID } = req.query;
+  const { reason } = req.body;
 
-  const booking = getBookingAndVerify(bookingID, req.params.id, next);
+  if (!reason)
+    return next(new AppError('Please provide a reason for failure', 400));
+
+  const booking = await getBookingAndVerify(bookingID, req.params.id);
 
   booking.result = { status: 'Failed', reason };
   await booking.save();
