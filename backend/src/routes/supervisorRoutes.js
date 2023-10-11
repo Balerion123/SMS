@@ -1,7 +1,9 @@
 import express from 'express';
 import {
+  getCleaner,
   getComplaints,
   getMyProfile,
+  markAttendance,
   supervisorSignup,
 } from '../controllers/supervisorController.js';
 import {
@@ -20,5 +22,7 @@ router.use(restrictToSupervisors);
 
 router.get('/getMyProfile', getMe, getMyProfile);
 router.get('/getComplaints', getMe, getComplaints);
+router.get('/getCleaner', getCleaner);
+router.get('/markAttendance', markAttendance);
 
 export default router;

@@ -5,6 +5,7 @@ import {
   createBooking,
   leaveComplain,
   test,
+  rateBooking,
 } from '../controllers/studentController.js';
 import {
   protect,
@@ -25,6 +26,7 @@ router.use(restrictToStudents);
 router.get('/getMyProfile', getMe, getMyProfile);
 router.get('/getMyBookings', getMe, getMyBookings);
 router.post('/createBooking', getMe, createBooking);
+router.post('/rateBooking', getMe, rateBooking);
 router.post('/leaveComplain', getMe, leaveComplain);
 
 export default router;

@@ -95,6 +95,38 @@ export const leaveComplain = catchAsync(async (req, res, next) => {
   });
 });
 
+export const rateBooking = catchAsync(async (req, res, next) => {
+  const { bookingID } = req.query;
+  const { rating } = req.body;
+
+  if (!rating) return next(new AppError('Rating is required', 400));
+  const booking = await Booking.findById(bookingID).populate('cleaner');
+  if (!booking) return next(new AppError('Booking id is not valid', 400));
+
+  if (booking.student.toString() !== req.params.id)
+    return next(new AppError('You are not associated with this booking', 403));
+
+  if (booking.status !== 'Completed')
+    return next(new AppError('Booking is not completed yet', 403));
+
+  const cleaner = booking.cleaner;
+  const { reviewsCount, stars } = cleaner.rating;
+  const newStars = (stars * reviewsCount + rating) / (reviewsCount + 1);
+  cleaner.rating = {
+    reviewsCount: reviewsCount + 1,
+    stars: newStars,
+  };
+  await cleaner.save();
+
+  booking.rating = rating;
+  await booking.save();
+
+  res.status(200).json({
+    status: 'success',
+    message: 'booking has been rated successfully',
+  });
+});
+
 export const getMyProfile = catchAsync(async (req, res, next) => {
   const user = await Student.findById(req.params.id);
 

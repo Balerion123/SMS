@@ -51,6 +51,11 @@ const bookingSchema = new mongoose.Schema({
     },
     default: {},
   },
+  rating: {
+    type: Number,
+    min: 1,
+    max: 5,
+  },
   complaint: {
     type: String,
     default: '',

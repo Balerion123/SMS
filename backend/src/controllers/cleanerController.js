@@ -85,6 +85,7 @@ export const completeBookingSuccess = catchAsync(async (req, res, next) => {
 
   const booking = await getBookingAndVerify(bookingID, req.params.id);
 
+  booking.status = 'Completed';
   booking.result = { status: 'Success' };
   await booking.save();
 
@@ -102,6 +103,7 @@ export const completeBookingFailure = catchAsync(async (req, res, next) => {
 
   const booking = await getBookingAndVerify(bookingID, req.params.id);
 
+  booking.status = 'Completed';
   booking.result = { status: 'Failed', reason };
   await booking.save();
 

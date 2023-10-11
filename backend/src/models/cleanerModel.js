@@ -40,6 +40,19 @@ const cleanerSchema = new mongoose.Schema({
         default: 0,
       },
     },
+    default: {
+      reviewsCount: 0,
+      starts: 0,
+    },
+  },
+  attendance: {
+    type: [
+      {
+        type: Date,
+        required: true,
+      },
+    ],
+    default: [],
   },
   password: {
     type: String,
